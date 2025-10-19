@@ -1,5 +1,6 @@
 import flet as ft
 from db import main_db
+from datetime import datetime as dt
 
 def main(page: ft.Page):
     page.title = 'ToDo list'
@@ -9,6 +10,9 @@ def main(page: ft.Page):
 
     def create_task_row(task_id, task_text):
         task_field = ft.TextField(value=task_text, read_only=True, expand=True)
+        time_now = dt.now()
+        time = time_now.strftime('%Y-%m-%d %H:%M')
+        task_time = ft.Text(value=time)
 
         def enable_edit(_):
             task_field.read_only = False
@@ -29,7 +33,7 @@ def main(page: ft.Page):
         save_button = ft.IconButton(icon=ft.Icons.SAVE_ALT_ROUNDED, on_click=save_edit)
         del_button = ft.IconButton(icon=ft.Icons.DELETE, on_click=del_task, icon_color=ft.Colors.RED)
 
-        return ft.Row([task_field, enable_button,save_button, del_button])
+        return ft.Row([task_time, task_field, enable_button,save_button, del_button])
     
     def load_task():
         task_list.controls.clear()
@@ -44,7 +48,7 @@ def main(page: ft.Page):
             task_list.controls.append(create_task_row(task_id=task_id, task_text=task))
             task_input.value = ''
             page.update()
-    
+
     def del_all(_):
             main_db.del_all_tasks()
             load_task()
