@@ -11,7 +11,7 @@ def main(page: ft.Page):
     def create_task_row(task_id, task_text):
         task_field = ft.TextField(value=task_text, read_only=True, expand=True)
         time_now = dt.now()
-        time = time_now.strftime('%Y-%m-%d %H:%M')
+        time = time_now.strftime('%Y-%m-%d %H:%M:%S')
         task_time = ft.Text(value=time)
 
         def enable_edit(_):
@@ -22,6 +22,9 @@ def main(page: ft.Page):
         def save_edit(_):
             main_db.update_task(task_id=task_id, new_task=task_field.value)
             task_field.read_only = True
+            new_time = dt.now().strftime('%Y-%m-%d %H:%M:%S')
+            task_time.value = new_time
+            task_time.update()
             task_field.update()
             page.update()
         
